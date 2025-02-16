@@ -5,8 +5,8 @@ import logging
 import os
 import pprint
 
-import pkg
-import usr
+import lib.ddl_pkg
+import lib.ddl_usr
 
 logging.basicConfig(level=logging.DEBUG,
                     format=' %(asctime)s - %(levelname)s - %(message)s')
@@ -40,14 +40,14 @@ def diff_items(t1, t2):
                 logging.debug('diff - {}/{}/{} - {}:{}, {}:{}'.format(table, column, 'len', t1['name'], t1_len, t2['name'], t2_len))                
 
 
-#column  pkg - usr
+#column  ddl_pkg - ddl_usr
 logging.debug('-----result-----')
 
 all_scheme = {'EB','EA','EE','EK'}
 
 for scheme in all_scheme:
     logging.debug('-- {} --'.format(scheme))
-    minus_items(pkg.all_tables[scheme], usr.all_tables[scheme])
-    minus_items(usr.all_tables[scheme], pkg.all_tables[scheme])
-    diff_items(usr.all_tables[scheme], pkg.all_tables[scheme])
+    minus_items(lib.ddl_pkg.all_tables[scheme], lib.ddl_usr.all_tables[scheme])
+    minus_items(lib.ddl_usr.all_tables[scheme], lib.ddl_pkg.all_tables[scheme])
+    diff_items(lib.ddl_usr.all_tables[scheme], lib.ddl_pkg.all_tables[scheme])
 logging.debug('program complete')
