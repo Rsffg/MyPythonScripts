@@ -5,9 +5,9 @@ import logging
 import os
 import pprint
 from pathlib import Path
-
-import lib.ddl_all
-import lib.dml_all
+import sys
+import json
+import importlib
 
 logging.basicConfig(level=logging.DEBUG,
                     format=' %(asctime)s - %(levelname)s - %(message)s')
@@ -24,25 +24,42 @@ def diff_items(t1, t2):
             datas = t1[table][sno]
             if datas not in t2[table].values():
                 logging.debug('diff - {} - table:{}/{}/{}'.format(t1['name'], table, sno, datas))
-            
+
+def get_mylib_mobule(name):
+    if str(path_to_lib) not in sys.path:
+        sys.path.insert(0, str(path_to_lib))
+
+    return importlib.import_module(name)
+          
 #start             
 logging.debug('program start')
 
-#init
-all_scheme = {'EB','EA','EE','EK'}
-usr_names = ['dml_usr'] #ここは自由に追加できるようにする
-pkg_name = 'dml_pkg' 
+if len(sys.argv) > 1:
+    json_str = sys.argv[1]
+    data = json.loads(json_str)
+    logging.debug(f'受け取ったjson: {data}')
+    
+    #セット
+    path_to_excel = Path(data['path_to_excel'])
+    path_to_lib = Path(data['path_to_lib'])
+    filename = data['filename']
+    all_scheme = set(data['gyomu_cd'])
+    usr_name = data['usr_name']
+    pkg_name = data['pkg_name']
+
 
 #main
 logging.debug('-----result-----')
 
+pkg_dml_module = get_mylib_mobule('ddl.' + pkg_name)
+usr_dml_module = get_mylib_mobule('ddl.' + usr_name)
 
-for usr_name in usr_names:
-    logging.debug('-- {} --'.format(usr_name))
-    for scheme in all_scheme:
-        logging.debug('-- {} --'.format(scheme))
-        diff_items(getattr(lib, usr_name).all_datas[scheme], lib.dml_pkg.all_datas[scheme]) #dml_usrは変更できるようにgetattrへ
-        diff_items(getattr(lib, pkg_name).all_datas[scheme], lib.dml_usr.all_datas[scheme]) #pkgも一応合わせて
+
+logging.debug('-- {} --'.format(usr_name))
+for scheme in all_scheme:
+    logging.debug('-- {} --'.format(scheme))
+    diff_items(usr_dml_module.all_datas[scheme], pkg_dml_module.all_datas[scheme]) 
+    diff_items(pkg_dml_module.all_datas[scheme], usr_dml_module.all_datas[scheme]) 
 
 #end
 logging.debug('program complete')

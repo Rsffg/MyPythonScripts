@@ -308,7 +308,7 @@ class DMLCompareFrame(tk.Frame):
         tk.Message(self, textvariable=SettingFrame.text_var_usr_name, width=500).grid(row=4, column=1, sticky='w')
         
         tk.Button(self, text='事前確認', command=self.check_libpath).grid(row=10, column=0, sticky='e')
-        tk.Button(self, text='実行', command=self.exec_ddl_compare).grid(row=20,column=1)
+        tk.Button(self, text='実行', command=self.exec_dml_compare).grid(row=20,column=1)
 
     def check_libpath(self):
         path_to_lib = Path(SettingFrame.text_var_lib.get()).glob('*.py')
@@ -317,7 +317,7 @@ class DMLCompareFrame(tk.Frame):
         for path in path_to_lib:
             self.filelist.insert(tk.END, path.stem)
             
-    def exec_ddl_compare(self):
+    def exec_dml_compare(self):
         data = {}
         
         gyomu_cd = tuple(SettingFrame.text_var_targetcode.get().split('/'))
@@ -332,7 +332,7 @@ class DMLCompareFrame(tk.Frame):
         
         json_str = json.dumps(data)
         logging.debug('run_scriptを実行します')
-        MyUtil.run_script('ddl_compare.py', json_str)        
+        MyUtil.run_script('dml_compare.py', json_str)        
         logging.debug('run_scriptは終了しました')
 
 class SettingFrame(tk.Frame):
