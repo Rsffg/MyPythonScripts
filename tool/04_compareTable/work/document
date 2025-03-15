@@ -1,0 +1,12 @@
+#tkinter
+・DDLのフォルダ、またはファイルを指定し、import_ddlに渡す
+　・引数がフォルダなら、「*_ddl.xlsx」を渡す
+
+
+
+#ddl import
+・tkinterの引数より、DDLのパスを取得する。
+　・ファイルかフォルダかを判別し、フォルダならフォルダ内のファイルを全て対象とする。
+
+
+#ddl compare
