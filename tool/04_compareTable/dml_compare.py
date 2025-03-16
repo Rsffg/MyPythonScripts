@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 import json
 import importlib
+from datetime import datetime
 
 logging.basicConfig(level=logging.DEBUG,
                     format=' %(asctime)s - %(levelname)s - %(message)s')
@@ -30,7 +31,18 @@ def get_mylib_mobule(name):
         sys.path.insert(0, str(path_to_lib))
 
     return importlib.import_module(name)
-          
+
+def writelog():
+    #ログファイル
+    now = datetime.now().strftime('%Y%m%d%H%M%S')
+    logfilename = 'result_dml_' + now + '.log'
+    path_to_log.mkdir(parents=True, exist_ok=True)
+
+    path_to_logfile = path_to_log / logfilename
+
+    file_handler = logging.FileHandler(path_to_logfile, encoding='utf-8')
+    logging.getLogger().addHandler(file_handler)
+    
 #start             
 logging.debug('program start')
 
@@ -40,9 +52,8 @@ if len(sys.argv) > 1:
     logging.debug(f'受け取ったjson: {data}')
     
     #セット
-    path_to_excel = Path(data['path_to_excel'])
     path_to_lib = Path(data['path_to_lib'])
-    filename = data['filename']
+    path_to_log = Path(data['path_to_log'])
     all_scheme = set(data['gyomu_cd'])
     usr_name = data['usr_name']
     pkg_name = data['pkg_name']
@@ -51,9 +62,10 @@ if len(sys.argv) > 1:
 #main
 logging.debug('-----result-----')
 
-pkg_dml_module = get_mylib_mobule('ddl.' + pkg_name)
-usr_dml_module = get_mylib_mobule('ddl.' + usr_name)
+pkg_dml_module = get_mylib_mobule('dml.' + pkg_name)
+usr_dml_module = get_mylib_mobule('dml.' + usr_name)
 
+writelog()
 
 logging.debug('-- {} --'.format(usr_name))
 for scheme in all_scheme:
