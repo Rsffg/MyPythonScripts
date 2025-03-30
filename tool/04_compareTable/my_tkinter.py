@@ -235,12 +235,12 @@ class DMLImportFrame(tk.Frame):
         if not list:
             logging.info('取込み資産が空です.処理を中断します。')
             return
-
+    # 
         #setting
         data['path_to_excel'] = SettingFrame.text_var_excel.get()
         data['path_to_lib'] = SettingFrame.text_var_lib.get()
         data['filename'] = SettingFrame.text_var_excel_dml_filename.get()
-        data['target'] = list #直前で拾ったやつ
+        data['target'] = tuple(SettingFrame.text_var_targetcode.get().split('/'))
         data['regex'] = SettingFrame.text_var_regex.get()
         
         json_str = json.dumps(data)
@@ -513,8 +513,16 @@ class LastFrame(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.config(borderwidth=1,relief='groove')
+        self.var_info = tk.StringVar()
+        self.var_info.set('test')
+
+        tk.Message(self, textvariable=self.var_info, width=500).pack(pady=10)
         
         quit_btn = tk.Button(self, text='終了', command=self.quit).pack(pady=10)
+    
+    @classmethod
+    def set_message(self, str):
+        self.var_info.set(str)
 
 app = Application()
 app.mainloop()

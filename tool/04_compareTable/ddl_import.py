@@ -101,6 +101,9 @@ for path in path_to_excel_files:
     
     filename_regex = re.compile(fr'{regex_str}')
     mo = filename_regex.search(path.stem)
+    if  mo == None:
+        logging.error('ファイル名と正規表現が一致しません。正規表現の設定を見直してください。')
+        sys.exit()
     logging.debug(f'regex_str: {regex_str}, mo: {mo.group(1)}')
     filename = mo.group(1) + '.py'
     
@@ -110,7 +113,6 @@ for path in path_to_excel_files:
     
     #第1引数に追加するファイル名を、第2引数に追加する文字を指定する
     # add_lib_ddl_all('ddl_all.py', path.stem)
-    logging.debug(f'all_tables:{all_tables}')
 
 #end
 logging.debug('program complete')

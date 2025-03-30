@@ -14,9 +14,9 @@ logging.basicConfig(level=logging.DEBUG,
                     format=' %(asctime)s - %(levelname)s - %(message)s')
 # logging.disable(logging.DEBUG)
 
-def makeTableData(table_list):
+def makeTableData(all_schemes):
     logging.debug('sheetnames: {}'.format(wb.sheetnames))
-    for table_name in table_list & set(wb.sheetnames): #ワークブックのシート名と一致する分だけ
+    for table_name in all_schemes & set(wb.sheetnames): #ワークブックのシート名と一致する分だけ
         sheet = wb[table_name]
         scheme = table_name[:2]
                 
@@ -74,15 +74,14 @@ if len(sys.argv) > 1:
     path_to_excel = Path(data['path_to_excel'])
     path_to_lib = Path(data['path_to_lib'])
     filename = data['filename']
-    table_list = set(data['target'])
+    all_schemes = set(data['target'])
     regex_str = data['regex']
 
 path2excel = path_to_excel.glob(filename) #カレントのexcelフォルダを検索対象とする。
 
 #main
 for path in path2excel:
-    for table in table_list:
-        scheme = table[:2]
+    for scheme in all_schemes:
         all_datas[scheme] = {}
         all_datas[scheme]['name'] = path.stem #拡張子なしはstemを使う
     
@@ -105,7 +104,7 @@ for path in path2excel:
     lib_module = import_mylib('ddl.' + lib_name)
     
     
-    makeTableData(table_list)
+    makeTableData(all_schemes)
 
     path_to_dml_lib = path_to_lib / 'dml'
     path_to_dml_lib.mkdir(parents=True, exist_ok=True)

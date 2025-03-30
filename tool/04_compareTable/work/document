@@ -1,6 +1,8 @@
 #tkinter
-・DDLのフォルダ、またはファイルを指定し、import_ddlに渡す
-　・引数がフォルダなら、「*_ddl.xlsx」を渡す
+・シート名を設定で持たせた方が良いかも
+　・スキーマ名：EA,EB,EE,EK
+　・DDLシート名：EA_TABLE,eb_table
+　・DMLシート名：EA,EB,EE
 
 
 
@@ -10,3 +12,11 @@
 
 
 #ddl compare
+
+
+ddl
+sheet:eb_table,ea_table
+
+
+dml
+sheet:ea,eb,ee,ekºº

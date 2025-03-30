@@ -46,7 +46,7 @@ def diff_items(t1, t2):
 def writelog():
     #ログファイル
     now = datetime.now().strftime('%Y%m%d%H%M%S')
-    logfilename = 'result_' + now + '.log'
+    logfilename = 'result_ddl_' + now + '.log'
     path_to_logdir.mkdir(parents=True, exist_ok=True)
 
     path_to_logfile = path_to_logdir / logfilename
