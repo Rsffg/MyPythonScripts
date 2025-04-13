@@ -43,16 +43,35 @@ def make_csv(fp):
             fp2.mkdir(parents=True, exist_ok=True)
             fp2 = fp2 / f'{key}.csv'
             
+            #ddlの場合はheaderを作成
+            if category == 'ddl':
+                header = [k[0] for k in ddl[key]]
+                headers.setdefault(schema, {})
+                headers[schema].setdefault(key, header)
+            
+            #dmlの場合はheaderを取得してセット
+            if category == 'dml':
+                header = headers[schema][key]
+                rows.insert(0, header)
+                print(f'header: {header}')
+
             with open(fp2, 'w', newline='') as f:
                 writer = csv.writer(f)
                 writer.writerows(rows)
+            
+                
+        
         
 #main
+headers = {}
 os.chdir(get_base_dir())
-list = get_base_dir().glob('*.csv')
+list1 = get_base_dir().glob('ddl*.csv')
+list2 = get_base_dir().glob('dml*.csv')
 
-for fp in list:
+for fp in list1:
     make_csv(fp)
 
-    
+for fp in list2:
+    make_csv(fp)
+
     
