@@ -1,4 +1,4 @@
-import csv, os, re
+import csv, os, re, sys
 from pathlib import Path
 
 def get_schema(name):
@@ -14,6 +14,12 @@ def get_category(name):
     elif 'dml' in name:
         str = 'dml'
     return str
+
+def get_base_dir():
+    if getattr(sys, 'frozen', False):
+        return Path(sys.executable).parent
+    else:
+        return Path(__file__).parent
 
 def make_csv(fp):
     with open(fp, newline='') as f:
@@ -33,7 +39,7 @@ def make_csv(fp):
         
         for key, rows in ddl.items():
             print(f'table: {key}, data: {rows}')
-            fp2 = Path(__file__).parent / category / schema
+            fp2 = get_base_dir() / category / schema
             fp2.mkdir(parents=True, exist_ok=True)
             fp2 = fp2 / f'{key}.csv'
             
@@ -42,8 +48,8 @@ def make_csv(fp):
                 writer.writerows(rows)
         
 #main
-os.chdir(Path(__file__).parent)
-list = Path(__file__).parent.glob('*.csv')
+os.chdir(get_base_dir())
+list = get_base_dir().glob('*.csv')
 
 for fp in list:
     make_csv(fp)
