@@ -15,6 +15,24 @@ def get_category(name):
         str = 'dml'
     return str
 
+def modify_rows(rows):
+    
+    list = ('sys_created','sys_updated','a2')
+    
+    for delete_col in list:
+        idx = 0
+        try:
+            # print(f'modify:{rows[0]}')
+            idx = rows[0].index(delete_col)
+        except:
+            pass
+        if idx > 0:
+            print(f'{rows[0]}の{idx}を削除します')
+            rows = [row[:idx] + row[idx+1:] for row in rows]
+    
+    return rows
+     
+
 def get_base_dir():
     if getattr(sys, 'frozen', False):
         return Path(sys.executable).parent
@@ -54,10 +72,16 @@ def make_csv(fp):
                 header = headers[schema][key]
                 rows.insert(0, header)
                 print(f'header: {header}')
+                
+                #不要なカラムを削除
+                rows = modify_rows(rows)
+            
 
             with open(fp2, 'w', newline='') as f:
                 writer = csv.writer(f)
                 writer.writerows(rows)
+            
+            
             
                 
         
